@@ -5,9 +5,7 @@ monitoring interface — built specifically to induce and diagnose hardware faul
 that don't show up in software logs.
 
 Companion to the write-up: *Simulating Real Robot Failures on a Breadboard*
-`[link to article]`
-
-![the rig](docs/img/rig.jpg)
+`https://imjbassi.medium.com/simulating-real-robot-failures-a3c62fbfc62d`
 
 ---
 
