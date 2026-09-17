@@ -40,15 +40,23 @@ void setup() {
     mcp2515.reset();
     mcp2515.setBitrate(CAN_125KBPS, MCP_8MHZ);
     mcp2515.setNormalMode();   // real bus, not loopback
-}
 
-void loop() {
     canMsg.can_id  = NODE_ID;
     canMsg.can_dlc = 1;
     canMsg.data[0] = DATA_BYTE;
-    mcp2515.sendMessage(&canMsg);
+}
 
-    Serial.println(NODE_NAME ": sent");
+void loop() {
+    // Only claim "sent" when the frame was actually queued. With nobody on the
+    // bus to ACK, the MCP2515 retransmits forever and its TX buffers fill, so a
+    // blind "sent" would hide exactly the fault this print exists to expose.
+    MCP2515::ERROR err = mcp2515.sendMessage(&canMsg);
+    if (err == MCP2515::ERROR_OK) {
+        Serial.println(NODE_NAME ": sent");
+    } else {
+        Serial.print(NODE_NAME ": send failed, error ");
+        Serial.println((int)err);
+    }
 
     delay(1000);
 }

@@ -16,7 +16,8 @@
  *   Loopback OK - message received
  *   ...
  *
- * If nothing prints, check SO/SI first — they're easy to swap, and swapping
+ * On failure it prints "Loopback FAIL - <reason>" instead. If nothing prints
+ * at all, or every line is a FAIL, check SO/SI first — they're easy to swap, and swapping
  * them fails silently rather than throwing an error.
  *
  * Library: autowp-mcp2515 (Arduino Library Manager, by autowp)
@@ -47,10 +48,22 @@ void loop() {
     canMsg.can_id  = 0x036;
     canMsg.can_dlc = 1;
     canMsg.data[0] = 0xAA;
-    mcp2515.sendMessage(&canMsg);
+    if (mcp2515.sendMessage(&canMsg) != MCP2515::ERROR_OK) {
+        Serial.println("Loopback FAIL - send error");
+        delay(1000);
+        return;
+    }
+
+    delay(10);   // give the controller time to loop the frame back
 
     struct can_frame received;
-    if (mcp2515.readMessage(&received) == MCP2515::ERROR_OK) {
+    if (mcp2515.readMessage(&received) != MCP2515::ERROR_OK) {
+        Serial.println("Loopback FAIL - nothing received");
+    } else if (received.can_id != canMsg.can_id ||
+               received.can_dlc != canMsg.can_dlc ||
+               received.data[0] != canMsg.data[0]) {
+        Serial.println("Loopback FAIL - received frame doesn't match");
+    } else {
         Serial.println("Loopback OK - message received");
     }
 

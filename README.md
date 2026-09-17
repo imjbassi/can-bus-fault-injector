@@ -50,7 +50,6 @@ firmware/
 docs/
   wiring.md          Pin tables, bus topology, termination
   fault-catalog.md   Every fault: method, capture, bus state, analysis
-  img/               Photos
 ```
 
 ---

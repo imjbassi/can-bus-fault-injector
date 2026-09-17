@@ -16,8 +16,8 @@ Six wires per node. Identical for all three.
 
 **Easy mistake:** SO and SI are simple to swap. SO ("serial out," data leaving
 the MCP2515) goes to D12. SI ("serial in," data entering the MCP2515) goes to
-D11. Swapping them causes the loopback test to fail silently rather than throw
-an obvious error.
+D11. Swapping them makes the loopback test print `Loopback FAIL` (or nothing at
+all) rather than point at the wiring directly.
 
 `INT` is an interrupt line that lets the MCP2515 signal the Nano when a frame
 arrives, instead of the Nano polling. Not used here; the sketches poll.
